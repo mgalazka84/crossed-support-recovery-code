@@ -1,12 +1,15 @@
-# Crossed support recovery: code
+# Crossed support-recovery code
 
-Python 3.12 scripts for synthetic crossed-model simulations.
+Install Python dependencies with `python -m pip install -r requirements.txt`.
+Run `python reproduce_all.py` to reproduce all experiments and figures. This is a substantial computation. The wrapper downloads the public lexdec data with a SHA-256 check and sets BLAS thread counts to one.
 
-```bash
-python -m pip install -r requirements.txt
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python run_irregular.py
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python legacy/run_experiments.py
-```
+Individual entry points:
 
-The scripts generate their synthetic inputs and write outputs locally to
-`results/` and `legacy/results/`. Generated files are excluded from Git.
+- `run_irregular.py`: incomplete-array simulations and analytic bounds.
+- `legacy/run_experiments.py`: balanced simulations and the adaptive-weight example.
+- `run_revision.py`: paired REML comparisons, variance-box sensitivity and real-data illustration.
+- `verify_revision.py`: algebra and likelihood checks.
+- `make_explanatory_figures.py`: explanatory vector diagrams.
+- `fetch_data.py`: download and verify the public languageR lexdec data.
+
+For individual numerical scripts, set `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1`. Run `python fetch_data.py` before `python run_revision.py --real-only`. Seeds are fixed in the source. Generated outputs and downloaded data stay local.

@@ -50,6 +50,7 @@ def geometry_experiment(rng: np.random.Generator) -> pd.DataFrame:
     fig, axes = plt.subplots(1, 2, figsize=(10.2, 3.6), constrained_layout=True)
     colors = ["#1b807a", "#cf7a32", "#4266a8"]
     for ax, stratum in zip(axes, ["row", "interaction"]):
+        amplitudes = np.linspace(.005,.16,80) if stratum == "interaction" else np.linspace(.02,1.,50)
         for (nr, nc), color in zip([(20, 180), (60, 60), (180, 20)], colors):
             n = nr * nc
             lam = 1.0 + nc if stratum == "row" else 1.0
@@ -127,13 +128,16 @@ def mixed_experiment(rng: np.random.Generator) -> pd.DataFrame:
                "Residual-calibrated GLS": feasible,
                "OLS (ignores random effects)": np.ones(p)}
     records = []
+    paired_records = []
     for b in np.linspace(.025, .75, 30):
+        paired_good = {}
         beta = np.zeros(p)
         beta[true_s] = b
         z = znoise + x @ beta
         for name, w in methods.items():
             chosen = bss_two(z, x, w)
             good = np.all(chosen == true_s, axis=1)
+            paired_good[name] = good
             count = int(good.sum())
             lo, hi = wilson(count, reps)
             records.append(dict(experiment="mixed", method=name, beta=float(b),
@@ -141,6 +145,10 @@ def mixed_experiment(rng: np.random.Generator) -> pd.DataFrame:
                 df_row=int(dfs[0]), df_column=int(dfs[1]), df_interaction=int(dfs[2]),
                 repetitions=reps, successes=count, recovery=count/reps,
                 ci_low=lo, ci_high=hi))
+        difference = paired_good["Residual-calibrated GLS"].astype(float)-paired_good["Oracle GLS"]
+        se = difference.std(ddof=1)/np.sqrt(reps)
+        paired_records.append(dict(beta=float(b),difference=float(difference.mean()),se=float(se),low=float(difference.mean()-1.96*se),high=float(difference.mean()+1.96*se),discordant=int(np.count_nonzero(difference))))
+    pd.DataFrame(paired_records).to_csv(OUT / "mixed_paired.csv",index=False)
     df = pd.DataFrame(records)
     df.to_csv(OUT / "mixed.csv", index=False)
     fig, ax = plt.subplots(figsize=(7.4, 3.8), constrained_layout=True)

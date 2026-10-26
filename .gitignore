@@ -1,14 +1,12 @@
-# Generated outputs and local environments
-results/
-legacy/results/
-.venv/
 __pycache__/
-*.py[cod]
+*.pyc
+results/
+results_legacy/
+results_revision/
+legacy/results/
+figures/
+data/
 *.pdf
-*.tex
 *.csv
 *.npz
-*.png
-*.zip
-*.docx
-.DS_Store
+*.rda
