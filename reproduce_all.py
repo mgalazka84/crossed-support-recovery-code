@@ -11,7 +11,7 @@ def main():
     fetch()
     env = dict(os.environ, OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1")
     for script in ("run_irregular.py", "legacy/run_experiments.py", "run_revision.py",
-                   "verify_revision.py", "make_explanatory_figures.py"):
+                   "verify_revision.py", "check_clarifications.py", "make_explanatory_figures.py"):
         subprocess.run([sys.executable, str(root / script)], cwd=root, env=env, check=True)
     (root / "results_legacy").mkdir(exist_ok=True)
     for name in ("geometry", "mixed", "counterexample"):

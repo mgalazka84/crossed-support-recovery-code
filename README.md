@@ -9,6 +9,7 @@ Individual entry points:
 - `legacy/run_experiments.py`: balanced simulations and the adaptive-weight example.
 - `run_revision.py`: paired REML comparisons, variance-box sensitivity and real-data illustration.
 - `verify_revision.py`: algebra and likelihood checks.
+- `check_clarifications.py`: cycle signal bounds and paired-interval reconstruction from generated summaries.
 - `make_explanatory_figures.py`: explanatory vector diagrams.
 - `fetch_data.py`: download and verify the public languageR lexdec data.
 
